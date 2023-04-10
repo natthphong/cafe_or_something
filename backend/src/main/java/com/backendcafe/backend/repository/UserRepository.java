@@ -1,10 +1,25 @@
 package com.backendcafe.backend.repository;
 
 import com.backendcafe.backend.entity.User;
+import com.backendcafe.backend.wrapper.UserWrapper;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.query.Param;
 
-public interface UserRepository extends JpaRepository<User , Integer> {
+import java.util.List;
 
-        User findByEmailId(@Param("email") String email);
+public interface UserRepository extends JpaRepository<User, Integer> {
+
+    User findByEmailId(@Param("email") String email);
+
+    List<UserWrapper> getAllUser();
+
+    List<String> getAllAdmin();
+
+    @Transactional
+    @Modifying
+    Integer updateStatus(@Param("status") String status, @Param("id") Integer id);
+
+
 }

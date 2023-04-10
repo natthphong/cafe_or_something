@@ -25,7 +25,14 @@ public class JwtUtil {
     private String secret = "ch+BVQw6MDLCLzgIl/gs+sjMXEFoJ9wBQ5HfNEODiq18wszZLbDakMUaA9HrS84CzTsebAbkZrh7zzZmWC0THw==";
 
     public String extractUsername(String token) {
-        return extractClamis(token, Claims::getSubject);
+        log.info("wtf");
+        try {
+            return extractClamis(token, Claims::getSubject);
+        }catch (Exception exception){
+
+        }
+        return null;
+
     }
 
     public Date extractExpiration(String token) {
@@ -41,27 +48,27 @@ public class JwtUtil {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
     public String generateToken(String username, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
-        log.info("Generate Token by {}" ,username);
+        log.info("Generate Token by {}", username);
         return createToken(claims, username);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
 
-        log.info("Create Token by {}" ,claims);
+        log.info("Create Token by {}", claims);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 *10))
-                .signWith(SignatureAlgorithm.HS256 ,secret)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 

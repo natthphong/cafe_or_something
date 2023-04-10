@@ -21,7 +21,9 @@ import org.springframework.web.cors.CorsConfiguration;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    final String[] PUBLIC = {"/user/login", "/user/signup", "/user/forgotPassword", "/user/test"};
+    final String[] PUBLIC = {"/user/login", "/user/signup", "/user/forgotPassword"
+            ,"/user/forgotPassword","/user/reset-password/**" ,"/product/getImage/**",
+            "/product/getImage/{productId}**"};
 
     final CustomerUserDetailsService customerUserDetailsService;
     final JwtFilter jwtFilter;
@@ -33,7 +35,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -45,7 +47,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(customerUserDetailsService);
+        authenticationManagerBuilder.userDetailsService(customerUserDetailsService).passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder.build();
     }
 
